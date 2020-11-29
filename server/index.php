@@ -25,12 +25,14 @@ $users = [
     '01015021212' => [
         'first_name' => 'Tamar',
         'last_name' => 'Gelashvili',
-        'gender' => 'Female'
+        'gender' => 'Male'
     ],
 ];
 
-// Retrieves the user personal id, that is going to be searched
-$personal_id = $_GET['personal_id'] ?? '';
+// Retrieves service parameters
+$serviceRequest = json_decode(file_get_contents('php://input'), 1);
+
+$personal_id = $serviceRequest['personal_id'] ?? '';
 
 // Checks whether the user exists
 if (!array_key_exists($personal_id, $users)) {
