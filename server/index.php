@@ -4,6 +4,7 @@
 $HTTP_statuses = [
     '200' => 'OK',
     '400' => 'Bad Request',
+    '401' => 'Unauthorized',
     '404' => 'Not Found',
 ];
 
@@ -29,19 +30,26 @@ $users = [
     ],
 ];
 
+// Define API password
+const PASSWORD = 'f0f962a5517d_';
+
 // Retrieves service parameters
 $serviceRequest = json_decode(file_get_contents('php://input'), 1);
 
-$personal_id = $serviceRequest['personal_id'] ?? '';
+$request_time = $serviceRequest['request_time'] ?? '';
+$password_hash_provided = $serviceRequest['password_hash'] ?? '';
 
-// Checks whether the user exists
-if (!array_key_exists($personal_id, $users)) {
-    $status_code = 404;
-}
+// Generating pass hash, that must be compared to the provided hash
+$password_hash_generated = hash("sha256", PASSWORD . $request_time);
 
 // Checks against bad request
-if (!preg_match('/[0-9]{11}$/', $personal_id)) {
+if (empty($request_time) || empty($password_hash_provided)) {
     $status_code = 400;
+}
+else
+// Checks Authentication
+if ($password_hash_provided != $password_hash_generated) {
+    $status_code = 401;
 }
 
 // Sets API status code and text
@@ -54,8 +62,8 @@ $result = [
 
 // Sends user details, if there is no error
 if($status_code == 200) {
-    $result['body'] = [
-        'person_details' => $users[$personal_id]
+    $result['data'] = [
+        'users' => $users
     ];
 }
 

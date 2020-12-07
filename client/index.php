@@ -2,8 +2,12 @@
 
 $api_URL = 'http://localhost/APIs/server/';
 
+// Define API password
+const PASSWORD = 'f0f962a5517d_';
+$request_time = date('Y-m-d|H:i:s');
 $params = [
-    'personal_id' => $_GET['personal_id']
+    'request_time' => $request_time,
+    'password_hash' => hash("sha256", PASSWORD . $request_time)
 ];
 
 $JSON_request = json_encode($params);
