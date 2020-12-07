@@ -6,9 +6,9 @@ API Format: JSON
 API Request caller: cURL
 API Parameters: personal_id ([0-9]{11})
 
-API URLs:
-200 OK: http://localhost/APIs/client/?personal_id=01015021210
-404 Not Found: http://localhost/APIs/client/?personal_id=01015021213
-400 Bad Request: http://localhost/APIs/client/?personal_id=0101502121k
+API URL:
+http://localhost/APIs/client/
 
 
+API Description:
+Password protected, encrypted with AES-128-ECB algorithm using 

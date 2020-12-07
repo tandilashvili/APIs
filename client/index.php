@@ -32,7 +32,10 @@ $latency = number_format(microtime(1) - $startTime, 5);
 
 // Adds parameter to the service about latency
 $response_array = json_decode($res, 1);
-$response_array['body']['service_latency'] = $latency;
+$response_array['data']['service_latency'] = $latency;
+
+// Decrypt users content
+$response_array['data']['users'] = json_decode(decrypt_text($response_array['data']['users'], PASSWORD), 1);
 $res = json_encode($response_array);
 
 // Sets content type to MIME type of JSON
@@ -41,3 +44,10 @@ header('Content-Type: application/json');
 // Returning response
 echo ($res);
 
+
+
+// Decrypts encrypted text (first parameter) using the secret key (second parameter)
+function decrypt_text($encrypted_string, $secret_key)
+{
+    return openssl_decrypt($encrypted_string,"AES-128-ECB", $secret_key);
+}

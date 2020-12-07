@@ -63,7 +63,7 @@ $result = [
 // Sends user details, if there is no error
 if($status_code == 200) {
     $result['data'] = [
-        'users' => $users
+        'users' => encrypt_text(json_encode($users), PASSWORD)
     ];
 }
 
@@ -75,3 +75,11 @@ http_response_code($status_code);
 
 // Returns response of the request
 echo json_encode($result);
+
+
+
+// Encrypts the text using the secret key
+function encrypt_text($text, $secret_key)
+{
+    return openssl_encrypt($text,"AES-128-ECB", $secret_key);
+}
