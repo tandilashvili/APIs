@@ -1,14 +1,12 @@
 API Details:
 
 API Type: REST
-API Method: POST
+API Method: GET
 API Format: JSON
-API Request caller: cURL
+API Request caller: file_get_contents()
 API Parameters: personal_id ([0-9]{11})
 
-API URLs:
-200 OK: http://localhost/APIs/client/?personal_id=01015021210
-404 Not Found: http://localhost/APIs/client/?personal_id=01015021213
-400 Bad Request: http://localhost/APIs/client/?personal_id=0101502121k
+API URL: https://reqres.in/api/users?page=1
 
-
+API Description: 
+Listing users from reqres.in API testing service

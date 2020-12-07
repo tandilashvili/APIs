@@ -1,39 +1,58 @@
 <?php
 
-$api_URL = 'http://localhost/APIs/server/';
+// Remote API url
+$api_URL = 'https://reqres.in/api/users?page=1';
 
-$params = [
-    'personal_id' => $_GET['personal_id']
-];
+// Retrieve users list from the API
+$res = file_get_contents($api_URL);
 
-$JSON_request = json_encode($params);
-$content_type = 'application/json';
-
-$ch = curl_init($api_URL);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-curl_setopt($ch, CURLOPT_POSTFIELDS, $JSON_request);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$curl_headers = array(
-    "Content-Type: $content_type; charset=utf-8",
-    'Content-Length: ' . strlen($JSON_request)
-);
-
-curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
-
-// Calculates latency of the request
-$startTime = microtime(1);
-$res = curl_exec($ch);
-$latency = number_format(microtime(1) - $startTime, 5);
-
-// Adds parameter to the service about latency
+// Decode the returned JSON sting
 $response_array = json_decode($res, 1);
-$response_array['body']['service_latency'] = $latency;
-$res = json_encode($response_array);
 
-// Sets content type to MIME type of JSON
-header('Content-Type: application/json');
+$users = $response_array['data'];
 
-// Returning response
-echo ($res);
+?><!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Listing users using Bootstrap table</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
 
+<div class="container">            
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+        <th>Avatar</th>
+      </tr>
+    </thead>
+    <tbody>
+        <h2 style="text-align: center; margin:40px;">Users list from reqres API</h2>
+        <?php
+        foreach($users as $user) {
+            ?>
+            <tr>
+                <td><?=$user['id']?></td>
+                <td><?=$user['first_name']?></td>
+                <td><?=$user['last_name']?></td>
+                <td><?=$user['email']?></td>
+                <td><img src="<?=$user['avatar']?>" height="50" /></td>
+            </tr>
+            <?php
+        }
+        ?>
+        
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
