@@ -30,7 +30,7 @@ if (isset($headers['Hmac'])) {
     }
 }
 
-// Existing users
+// letter to return as a response
 $letter = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi unde fugit voluptates odio! Ullam eligendi nam tenetur architecto molestias voluptatibus dolorum! Ratione soluta quia minus at, laborum eius eligendi optio!';
 // Generating the letter hash, for signing purpose
 $letter_hash = hash("sha256", $letter);
@@ -59,7 +59,7 @@ $result = [
     ]
 ];
 
-// Sends user details, if there is no error
+// Sends the letter, if there is no error
 if($status_code == 200) {
     $result['data'] = [
         'letter' => $letter,
