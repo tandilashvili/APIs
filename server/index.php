@@ -9,11 +9,26 @@ $HTTP_statuses = [
 
 $allowed_users = ['User1', 'User2', 'User3'];
 
+// Retrieves service parameters
+$serviceRequest = json_decode(file_get_contents('php://input'), 1);
+
+// Define API password
+const PASSWORD = 'f0f962a5517d_';
+
 // Default HTTP status code
 $status_code = 200;
 
 // Get all headers from the request
 $headers = getallheaders();
+$hmac = '';
+if (isset($headers['Hmac'])) {
+    $hmac = $headers['Hmac'];
+
+    if (isset($serviceRequest['param1']) && isset($serviceRequest['param2']) && $serviceRequest['param3']) {
+        $params_c = $serviceRequest['param1'].$serviceRequest['param2'].$serviceRequest['param3'];
+        $hmac_generated = hash_hmac('sha256', $params_c, PASSWORD);
+    }
+}
 
 // Existing users
 $letter = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi unde fugit voluptates odio! Ullam eligendi nam tenetur architecto molestias voluptatibus dolorum! Ratione soluta quia minus at, laborum eius eligendi optio!';
@@ -23,16 +38,16 @@ $letter_hash = hash("sha256", $letter);
 // // Makes the letter faked
 // $letter .= '.';
 
-// Define API password
-const PASSWORD = 'f0f962a5517d_';
-
 // Checks Authentication
-if ((isset($headers['Password']) && $headers['Password'] != PASSWORD) || (isset($headers['User']) && !in_array($headers['User'], $allowed_users))) {
+if ((isset($headers['Hmac']) && $headers['Hmac'] != $hmac_generated)) {
     $status_code = 401;
 }
 
 // Checks against bad request
-if (!isset($headers['User']) || !isset($headers['Password'])) {
+if (!isset($headers['Hmac']) || 
+    !isset($serviceRequest['param1']) || 
+    !isset($serviceRequest['param2']) || 
+    !isset($serviceRequest['param3'])) {
     $status_code = 400;
 }
 

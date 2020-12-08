@@ -6,9 +6,16 @@ $api_URL = 'http://localhost/APIs/server/';
 const PASSWORD = 'f0f962a5517d_';
 $request_time = date('Y-m-d|H:i:s');
 $params = [
-    'request_time' => $request_time,
-    'password_hash' => hash("sha256", PASSWORD . $request_time)
+    'param1' => 'param1_value',
+    'param2' => 'param2_value',
+    'param3' => 'param3_value',
 ];
+$values_concatenated = '';
+foreach($params as $param) {
+    $values_concatenated .= $param;
+}
+
+$hmac = hash_hmac('sha256', $values_concatenated, PASSWORD);
 
 $JSON_request = json_encode($params);
 $content_type = 'application/json';
@@ -19,8 +26,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $JSON_request);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 $curl_headers = array(
-    "User: User1",
-    "Password: " . PASSWORD,
+    "Hmac: ".$hmac,
     "Content-Type: $content_type; charset=utf-8",
     'Content-Length: ' . strlen($JSON_request)
 );
@@ -36,6 +42,7 @@ $latency = number_format(microtime(1) - $startTime, 5);
 $response_array = json_decode($res, 1);
 $response_array['data']['service_latency'] = $latency;
 
+// Check against integrity of the letter
 if ($response_array['data']['letter_hash'] != hash("sha256", $response_array['data']['letter'])) {
     $response_array['status'] = ['code' => '403', 'text' => 'The content is faked!'];
     unset($response_array['data']);
