@@ -34,8 +34,14 @@ $latency = number_format(microtime(1) - $startTime, 5);
 $response_array = json_decode($res, 1);
 $response_array['data']['service_latency'] = $latency;
 
-// Decrypt users content
-$response_array['data']['users'] = json_decode(decrypt_text($response_array['data']['users'], PASSWORD), 1);
+if ($response_array['data']['letter_hash'] != hash("sha256", $response_array['data']['letter'])) {
+    $response_array['status'] = ['code' => '403', 'text' => 'The content is faked!'];
+    unset($response_array['data']);
+
+    // Sets HTTP response status
+    http_response_code($response_array['status']['code']);
+}
+
 $res = json_encode($response_array);
 
 // Sets content type to MIME type of JSON
@@ -43,11 +49,3 @@ header('Content-Type: application/json');
 
 // Returning response
 echo ($res);
-
-
-
-// Decrypts encrypted text (first parameter) using the secret key (second parameter)
-function decrypt_text($encrypted_string, $secret_key)
-{
-    return openssl_decrypt($encrypted_string,"AES-128-ECB", $secret_key);
-}

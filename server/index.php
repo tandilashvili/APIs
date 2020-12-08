@@ -5,30 +5,18 @@ $HTTP_statuses = [
     '200' => 'OK',
     '400' => 'Bad Request',
     '401' => 'Unauthorized',
-    '404' => 'Not Found',
 ];
 
 // Default HTTP status code
 $status_code = 200;
 
 // Existing users
-$users = [
-    '01015021210' => [
-        'first_name' => 'Valeri',
-        'last_name' => 'Tandilashvili',
-        'gender' => 'Male'
-    ],
-    '01015021211' => [
-        'first_name' => 'George',
-        'last_name' => 'Bolkvadze',
-        'gender' => 'Male'
-    ],
-    '01015021212' => [
-        'first_name' => 'Tamar',
-        'last_name' => 'Gelashvili',
-        'gender' => 'Male'
-    ],
-];
+$letter = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi unde fugit voluptates odio! Ullam eligendi nam tenetur architecto molestias voluptatibus dolorum! Ratione soluta quia minus at, laborum eius eligendi optio!';
+// Generating the letter hash, for signing purpose
+$letter_hash = hash("sha256", $letter);
+
+// // Makes the letter faked
+// $letter .= '.';
 
 // Define API password
 const PASSWORD = 'f0f962a5517d_';
@@ -63,7 +51,8 @@ $result = [
 // Sends user details, if there is no error
 if($status_code == 200) {
     $result['data'] = [
-        'users' => encrypt_text(json_encode($users), PASSWORD)
+        'letter' => $letter,
+        'letter_hash' => $letter_hash,
     ];
 }
 
@@ -75,11 +64,3 @@ http_response_code($status_code);
 
 // Returns response of the request
 echo json_encode($result);
-
-
-
-// Encrypts the text using the secret key
-function encrypt_text($text, $secret_key)
-{
-    return openssl_encrypt($text,"AES-128-ECB", $secret_key);
-}
