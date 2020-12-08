@@ -19,6 +19,8 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $JSON_request);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 $curl_headers = array(
+    "User: User1",
+    "Password: " . PASSWORD,
     "Content-Type: $content_type; charset=utf-8",
     'Content-Length: ' . strlen($JSON_request)
 );

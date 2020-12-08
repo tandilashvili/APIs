@@ -7,8 +7,13 @@ $HTTP_statuses = [
     '401' => 'Unauthorized',
 ];
 
+$allowed_users = ['User1', 'User2', 'User3'];
+
 // Default HTTP status code
 $status_code = 200;
+
+// Get all headers from the request
+$headers = getallheaders();
 
 // Existing users
 $letter = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi unde fugit voluptates odio! Ullam eligendi nam tenetur architecto molestias voluptatibus dolorum! Ratione soluta quia minus at, laborum eius eligendi optio!';
@@ -21,23 +26,14 @@ $letter_hash = hash("sha256", $letter);
 // Define API password
 const PASSWORD = 'f0f962a5517d_';
 
-// Retrieves service parameters
-$serviceRequest = json_decode(file_get_contents('php://input'), 1);
-
-$request_time = $serviceRequest['request_time'] ?? '';
-$password_hash_provided = $serviceRequest['password_hash'] ?? '';
-
-// Generating pass hash, that must be compared to the provided hash
-$password_hash_generated = hash("sha256", PASSWORD . $request_time);
+// Checks Authentication
+if ((isset($headers['Password']) && $headers['Password'] != PASSWORD) || (isset($headers['User']) && !in_array($headers['User'], $allowed_users))) {
+    $status_code = 401;
+}
 
 // Checks against bad request
-if (empty($request_time) || empty($password_hash_provided)) {
+if (!isset($headers['User']) || !isset($headers['Password'])) {
     $status_code = 400;
-}
-else
-// Checks Authentication
-if ($password_hash_provided != $password_hash_generated) {
-    $status_code = 401;
 }
 
 // Sets API status code and text
