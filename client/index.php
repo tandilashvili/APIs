@@ -4,25 +4,17 @@ $api_URL = 'http://localhost/APIs/server/';
 
 // Define API password
 const PASSWORD = 'f0f962a5517d_';
-$request_time = date('Y-m-d|H:i:s');
-$params = [
-    'request_time' => $request_time,
-    'password_hash' => hash("sha256", PASSWORD . $request_time)
-];
 
-$JSON_request = json_encode($params);
 $content_type = 'application/json';
 
 $ch = curl_init($api_URL);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-curl_setopt($ch, CURLOPT_POSTFIELDS, $JSON_request);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 $curl_headers = array(
     "User: User1",
     "Password: " . PASSWORD,
-    "Content-Type: $content_type; charset=utf-8",
-    'Content-Length: ' . strlen($JSON_request)
+    "Content-Type: $content_type; charset=utf-8"
 );
 
 curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
