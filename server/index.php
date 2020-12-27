@@ -65,7 +65,7 @@ $xml =
 "<response>
     <status>
         <code>$status_code</code>
-        <code>{$HTTP_statuses[$status_code]}</code>
+        <text>{$HTTP_statuses[$status_code]}</text>
     </status>"
     . $body . "
 </response>";
