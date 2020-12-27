@@ -42,17 +42,23 @@ if (!preg_match('/[0-9]{11}$/', $personal_id)) {
     $status_code = 400;
 }
 
+// Sets API status code and text
+$result = [
+    'status' => [
+        'code' => $status_code,
+        'text' => $HTTP_statuses[$status_code]
+    ]
+];
+
 // Sends user details, if there is no error
-$body = '';
 if($status_code == 200) {
-    $body = "<body>    
-        <person_details>
-            <first_name>{$users[$personal_id]['first_name']}</first_name>
-            <last_name>{$users[$personal_id]['last_name']}</last_name>
-            <gender>{$users[$personal_id]['gender']}</gender>
-        </person_details>
-    </body>";
+    $result['body'] = [
+        'person_details' => $users[$personal_id]
+    ];
 }
+
+// Converts response array to XML
+$xml = arrayToXml($result);
 
 // Sets content type to MIME type of JSON
 header('Content-Type: text/xml');
@@ -61,14 +67,34 @@ header('Content-Type: text/xml');
 http_response_code($status_code);
 
 // Returns response of the request
-$xml = 
-"<response>
-    <status>
-        <code>$status_code</code>
-        <code>{$HTTP_statuses[$status_code]}</code>
-    </status>"
-    . $body . "
-</response>";
-
 echo $xml;
 
+
+// The function converts an array to an XML
+function arrayToXml($array, $rootElement = null, $xml = null) { 
+    $_xml = $xml; 
+      
+    // If there is no Root Element then insert root 
+    if ($_xml === null) { 
+        $_xml = new SimpleXMLElement($rootElement !== null ? $rootElement : '<response/>'); 
+    } 
+      
+    // Visit all key value pair 
+    foreach ($array as $k => $v) { 
+          
+        // If there is nested array then 
+        if (is_array($v)) {  
+              
+            // Call function for nested array 
+            arrayToXml($v, $k, $_xml->addChild($k)); 
+            } 
+              
+        else { 
+              
+            // Simply add child element.  
+            $_xml->addChild($k, $v); 
+        } 
+    } 
+      
+    return $_xml->asXML(); 
+} 

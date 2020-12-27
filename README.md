@@ -11,5 +11,6 @@ API URLs:
 400 Bad Request: http://localhost/APIs/server/?personal_id=0101502121k
 
 API Description:
-Hard coded xml nodes. Returns person details
+Response array is converted into XML using converter function. 
+Returns person details
 
