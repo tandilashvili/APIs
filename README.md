@@ -2,7 +2,7 @@ API Details:
 
 API Type: REST
 API Method: GET
-API Format: JSON
+API Format: XML
 API Parameters: personal_id ([0-9]{11})
 
 API URLs:
@@ -10,4 +10,6 @@ API URLs:
 404 Not Found: http://localhost/APIs/server/?personal_id=01015021213
 400 Bad Request: http://localhost/APIs/server/?personal_id=0101502121k
 
+API Description:
+Hard coded xml nodes. Returns person details
 

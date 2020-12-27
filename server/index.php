@@ -42,26 +42,33 @@ if (!preg_match('/[0-9]{11}$/', $personal_id)) {
     $status_code = 400;
 }
 
-// Sets API status code and text
-$result = [
-    'status' => [
-        'code' => $status_code,
-        'text' => $HTTP_statuses[$status_code]
-    ]
-];
-
 // Sends user details, if there is no error
+$body = '';
 if($status_code == 200) {
-    $result['body'] = [
-        'person_details' => $users[$personal_id]
-    ];
+    $body = "<body>    
+        <person_details>
+            <first_name>{$users[$personal_id]['first_name']}</first_name>
+            <last_name>{$users[$personal_id]['last_name']}</last_name>
+            <gender>{$users[$personal_id]['gender']}</gender>
+        </person_details>
+    </body>";
 }
 
 // Sets content type to MIME type of JSON
-header('Content-Type: application/json');
+header('Content-Type: text/xml');
 
 // Sets HTTP response status
 http_response_code($status_code);
 
 // Returns response of the request
-echo json_encode($result);
+$xml = 
+"<response>
+    <status>
+        <code>$status_code</code>
+        <code>{$HTTP_statuses[$status_code]}</code>
+    </status>"
+    . $body . "
+</response>";
+
+echo $xml;
+
