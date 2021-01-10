@@ -1,4 +1,6 @@
 <?php
+include 'config.php';
+
 
 // Potential HTTP status codes
 $HTTP_statuses = [
@@ -12,11 +14,15 @@ $status_code = 200;
 
 // Existing users
 $letter = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi unde fugit voluptates odio! Ullam eligendi nam tenetur architecto molestias voluptatibus dolorum! Ratione soluta quia minus at, laborum eius eligendi optio!';
-// Generating the letter hash, for signing purpose
-$letter_hash = hash("sha256", $letter);
+
+
+
+// Generating the letter signature, using PRIVATE KEY
+$letter_signature = getSignature($private_key, OPENSSL_ALGO_SHA256, $letter);
 
 // // Makes the letter faked
 // $letter .= '.';
+
 
 // Define API password
 const PASSWORD = 'f0f962a5517d_';
@@ -52,7 +58,7 @@ $result = [
 if($status_code == 200) {
     $result['data'] = [
         'letter' => $letter,
-        'letter_hash' => $letter_hash,
+        'letter_signature' => $letter_signature,
     ];
 }
 
@@ -64,3 +70,18 @@ http_response_code($status_code);
 
 // Returns response of the request
 echo json_encode($result);
+
+
+
+function getSignature($private_key, $algorithm, $string_to_sign) {
+
+    $binary_signature = "";
+
+    // Create signature on $data
+    openssl_sign($string_to_sign, $binary_signature, $private_key, $algorithm);
+
+    // Create base64 version of the signature
+    $signature = base64_encode($binary_signature);
+    
+    return $signature;
+}

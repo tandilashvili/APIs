@@ -1,0 +1,14 @@
+<?php
+
+// Server's public key to verify the signature
+$server_public_key = <<<EOD
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyTVGxpnYfwrTSBwzWxgX
+17k+s0we1iGtaVOApOX1FDfI2xwidvhAjjc1IXPAMsgJ6fwHjbSBCOTggv6AWmHV
+HlOevwfiyVxpHjzmKc2A9E0GVRwfCB/dxcS1HpRFvqJku2FpwGvpJnrZBlh7Wuu8
+8Cc0EEbzEbzFoSNG+cI/692CzlqItM8pa1cz5MP7JEVdDq0Nn11NUUG4AAZveqX9
+dXWR2tTRypwVHtMM+XuXI+Zdaw6SlWBo4WvUbFL/yQsj0hUn0LH5zUwZ0vJzgToc
+qLjPbAJ7DJIRFia9g6i6XBMY7zYQ2cKHSNYW2CMg3TIeSpxJNXdRgzKExEBO3p5V
+OQIDAQAB
+-----END PUBLIC KEY-----
+EOD;

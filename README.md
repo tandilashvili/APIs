@@ -11,4 +11,6 @@ http://localhost/APIs/client/
 
 
 API Description:
-The API returns a letter that is Password protected, signed with sha256 
+The API returns a letter that is Password protected, signed with Private Key.
+The server signs letter using RSA Private key and sends the letter with the signature to the client.
+The client checks the signature using server's public key previously sent to the client.

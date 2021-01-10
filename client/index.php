@@ -1,4 +1,6 @@
 <?php
+include 'config.php';
+
 
 $api_URL = 'http://localhost/APIs/server/';
 
@@ -34,7 +36,13 @@ $latency = number_format(microtime(1) - $startTime, 5);
 $response_array = json_decode($res, 1);
 $response_array['data']['service_latency'] = $latency;
 
-if ($response_array['data']['letter_hash'] != hash("sha256", $response_array['data']['letter'])) {
+// Verifies signature using server's public key
+if (!verifySignature(
+        $server_public_key, 
+        OPENSSL_ALGO_SHA256, 
+        $response_array['data']['letter_signature'], 
+        $response_array['data']['letter']
+    )) {
     $response_array['status'] = ['code' => '403', 'text' => 'The content is faked!'];
     unset($response_array['data']);
 
@@ -49,3 +57,18 @@ header('Content-Type: application/json');
 
 // Returning response
 echo ($res);
+
+
+
+
+
+function verifySignature($server_public_key, $algorithm, $signature, $string) {
+
+    // Extract original binary signature 
+    $binary_signature = base64_decode($signature);
+
+    // Check signature
+    $result = openssl_verify($string, $binary_signature, $server_public_key, $algorithm);
+
+    return $result;
+}
