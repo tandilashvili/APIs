@@ -1,14 +1,23 @@
 <?php
 
-// Server's public key to verify the signature
-$server_public_key = <<<EOD
------BEGIN PUBLIC KEY-----
+// Server's certificate from which we are going 
+// to extract public key to verify the signature
+$server_certificate = <<<EOD
+-----BEGIN CERTIFICATE-----
+MIICxjCCAa6gAwIBAgIEXtno+DANBgkqhkiG9w0BAQsFADAkMQswCQYDVQQGEwJH
+RTEVMBMGA1UEAwwMQmFuayBDcnlzdGFsMCAXDTIwMDYwNTA2NDA1NloYDzIwNzAw
+NjA1MDY0MDU2WjAkMQswCQYDVQQGEwJHRTEVMBMGA1UEAwwMQmFuayBDcnlzdGFs
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyTVGxpnYfwrTSBwzWxgX
 17k+s0we1iGtaVOApOX1FDfI2xwidvhAjjc1IXPAMsgJ6fwHjbSBCOTggv6AWmHV
 HlOevwfiyVxpHjzmKc2A9E0GVRwfCB/dxcS1HpRFvqJku2FpwGvpJnrZBlh7Wuu8
 8Cc0EEbzEbzFoSNG+cI/692CzlqItM8pa1cz5MP7JEVdDq0Nn11NUUG4AAZveqX9
 dXWR2tTRypwVHtMM+XuXI+Zdaw6SlWBo4WvUbFL/yQsj0hUn0LH5zUwZ0vJzgToc
 qLjPbAJ7DJIRFia9g6i6XBMY7zYQ2cKHSNYW2CMg3TIeSpxJNXdRgzKExEBO3p5V
-OQIDAQAB
------END PUBLIC KEY-----
+OQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBVlVeXWvl/xE22LJ3koV89nMwfJPh6
+A0NdxBDsBvHT+1PlWI9LNdKnr0jFpd07KlRG8BVpaznpffygm9mG2k9Nj1ujNkSW
+dOn8/fNPQ29zUAraJxMC7tkDz1jjhvmGe0He6G/fo6K6H8DtIZx8qFSDmrr4o/YB
+tS2ZPZSe844cMx2/m5aZvYEniDDb4TT56/7nqyynllAsOGG57nQHY6StgewJOJiP
+Y/mlSWnUTVT6XwA4WnmH6lihBz4dkj7l2c+pZHOlztSGHba55qRCpw86aPLmXhUb
+FEGCAoIUpix1ytnctvnnFyKimeqhYuoFEKvEMkKfuWouewOnYpsXOi6a
+-----END CERTIFICATE-----
 EOD;

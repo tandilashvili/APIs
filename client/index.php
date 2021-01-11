@@ -36,9 +36,9 @@ $latency = number_format(microtime(1) - $startTime, 5);
 $response_array = json_decode($res, 1);
 $response_array['data']['service_latency'] = $latency;
 
-// Verifies signature using server's public key
+// Verifies signature using server's certificate
 if (!verifySignature(
-        $server_public_key, 
+        $server_certificate, 
         OPENSSL_ALGO_SHA256, 
         $response_array['data']['letter_signature'], 
         $response_array['data']['letter']
@@ -64,6 +64,18 @@ echo ($res);
 
 function verifySignature($server_public_key, $algorithm, $signature, $string) {
 
+    // Extracting public key from the specified certificate
+    $public_key = openssl_pkey_get_public($server_public_key);
+    /*
+    // Another way to get the certificate's content
+    $public_key = openssl_pkey_get_public(file_get_contents('./cert/bank_crystal.cer'));
+    */
+
+    // $public key resource is also acceptable, so converting 
+    // resource to public key string is not necessary
+    $key_data = openssl_pkey_get_details($public_key);
+    $server_public_key = $key_data['key'];
+    
     // Extract original binary signature 
     $binary_signature = base64_decode($signature);
 
