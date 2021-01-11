@@ -11,4 +11,4 @@ http://localhost/APIs/client/
 
 
 API Description:
-Password protected, encrypted with AES-128-ECB algorithm using 
+Person details in response json is ncrypted with private key (asymmetric encryption) 

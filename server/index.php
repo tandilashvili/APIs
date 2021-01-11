@@ -1,10 +1,11 @@
 <?php
+include 'config.php';
+
 
 // Potential HTTP status codes
 $HTTP_statuses = [
     '200' => 'OK',
     '400' => 'Bad Request',
-    '401' => 'Unauthorized',
     '404' => 'Not Found',
 ];
 
@@ -36,20 +37,16 @@ const PASSWORD = 'f0f962a5517d_';
 // Retrieves service parameters
 $serviceRequest = json_decode(file_get_contents('php://input'), 1);
 
-$request_time = $serviceRequest['request_time'] ?? '';
-$password_hash_provided = $serviceRequest['password_hash'] ?? '';
+$personal_id = $serviceRequest['personal_id'] ?? '';
 
-// Generating pass hash, that must be compared to the provided hash
-$password_hash_generated = hash("sha256", PASSWORD . $request_time);
+// Checks whether the user exists
+if (!array_key_exists($personal_id, $users)) {
+    $status_code = 404;
+}
 
 // Checks against bad request
-if (empty($request_time) || empty($password_hash_provided)) {
+if (!preg_match('/[0-9]{11}$/', $personal_id)) {
     $status_code = 400;
-}
-else
-// Checks Authentication
-if ($password_hash_provided != $password_hash_generated) {
-    $status_code = 401;
 }
 
 // Sets API status code and text
@@ -63,7 +60,7 @@ $result = [
 // Sends user details, if there is no error
 if($status_code == 200) {
     $result['data'] = [
-        'users' => encrypt_text(json_encode($users), PASSWORD)
+        'person_details' => encrypt_text(json_encode($users[$personal_id]), $alice_public_key)
     ];
 }
 
@@ -79,7 +76,9 @@ echo json_encode($result);
 
 
 // Encrypts the text using the secret key
-function encrypt_text($text, $secret_key)
+function encrypt_text($text, $alice_public_key)
 {
-    return openssl_encrypt($text,"AES-128-ECB", $secret_key);
+    openssl_public_encrypt($text, $encrypted_message, $alice_public_key);
+
+    return base64_encode($encrypted_message);
 }
