@@ -11,4 +11,5 @@ http://localhost/APIs/client/
 
 
 API Description:
-Person details in response json is ncrypted with private key (asymmetric encryption) 
+Two way encryption with RSA public/private keys
+Encrypted personal ID is sent, encrypted Person details is returned

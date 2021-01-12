@@ -1,5 +1,6 @@
 <?php
 
+
 // Public and private key pair
 $public_key = <<<EOD
 -----BEGIN PUBLIC KEY-----
@@ -41,4 +42,21 @@ MSMIGxdvm/Gt8MH+L9/70We0bLTmbegVTLGgyCsv1C5NuNkHc7MzT1sT++vagsF+
 +S7v5A3jII6u/B41v02bNBEXLsg1cwmw8BKJDA0enOT11JXrUuKVbZia4vEafJT/
 qlPb1x3MJZ4KmKGCo8UkCg==
 -----END PRIVATE KEY-----
+EOD;
+
+
+
+
+
+// Server public key
+$server_public_key = <<<EOD
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyXPjR7HelzeP8AnsFJUX
+bpbjbXDYXE9/ypyUp+wHNq9h5wkAPOWd2HcfdFofjznP3VRhJsMEVWJ7mZ8EBFPL
+5oW9OAoT5t2Ll74gp+QJYf0SCWg8cyAPIQhbMJ/WWBIae7W3secAWCnSvixdiFLL
+3cN7xkZ/MW7At0GpsyyVqWczlFJEifrqRfLRiWij9p2tGhY/lwsrlgsin7/bWceg
+7AT+9YDkHwEc81HEZ3VEoRHsWdYHIyYGMSDV8cajSeMf0ptLaibP6l7ZuDc56LzF
+WK8JghqQkYfRjnKjXD1PUHqIIZYqzHNQqf9PDFX9bbCzCA7AiOaDHndtjI4jBvDj
+swIDAQAB
+-----END PUBLIC KEY-----
 EOD;
