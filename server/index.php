@@ -6,6 +6,7 @@ include 'config.php';
 $HTTP_statuses = [
     '200' => 'OK',
     '400' => 'Bad Request',
+    '401' => 'Unauthorized',
     '404' => 'Not Found',
 ];
 
@@ -37,11 +38,23 @@ $users = [
 // Retrieves service parameters
 $serviceRequest = json_decode(file_get_contents('php://input'), 1);
 $personal_id = $serviceRequest['personal_id'] ?? '';
+$personal_id_signature = $serviceRequest['personal_id_signature'] ?? '';
 
 
 // Decrypts encrypted personal_id parameter
 if (!empty($personal_id)) {
     $personal_id = decrypt_text($personal_id, $private_key);
+}
+
+
+// Checks whether the user exists
+if (!verifySignature(
+    $client_public_key, 
+    OPENSSL_ALGO_SHA256, 
+    $personal_id_signature, 
+    $personal_id
+)) {
+    $status_code = 401;
 }
 
 
@@ -68,8 +81,10 @@ $result = [
 
 // Sends user details, if there is no error
 if($status_code == 200) {
+    $response = json_encode($users[$personal_id]);
     $result['data'] = [
-        'person_details' => encrypt_text(json_encode($users[$personal_id]), $client_public_key)
+        'person_details' => encrypt_text($response, $client_public_key),
+        'person_details_signature' => getSignature($private_key, OPENSSL_ALGO_SHA256, $response)
     ];
 }
 
@@ -104,4 +119,30 @@ function decrypt_text($encrypted_base64, $private_key)
     openssl_private_decrypt($encrypted_string, $original_text, $private_key);
 
     return $original_text;
+}
+
+// Returns digital signature of the string
+function getSignature($private_key, $algorithm, $string_to_sign) {
+
+    $binary_signature = "";
+
+    // Create signature on $data
+    openssl_sign($string_to_sign, $binary_signature, $private_key, $algorithm);
+
+    // Create base64 version of the signature
+    $signature = base64_encode($binary_signature);
+    
+    return $signature;
+}
+
+// verifies the signature using the client's public key
+function verifySignature($server_public_key, $algorithm, $signature, $string) {
+
+    // Extract original binary signature 
+    $binary_signature = base64_decode($signature);
+
+    // Check signature
+    $result = openssl_verify($string, $binary_signature, $server_public_key, $algorithm);
+
+    return $result;
 }

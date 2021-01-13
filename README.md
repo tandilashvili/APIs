@@ -11,5 +11,4 @@ http://localhost/APIs/client/
 
 
 API Description:
-Two way encryption with RSA public/private keys
-Encrypted personal ID is sent, encrypted Person details is returned
+Two way encryption and two way verification with RSA public/private keys
