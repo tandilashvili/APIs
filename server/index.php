@@ -1,5 +1,6 @@
 <?php
 include 'config.php';
+include '../classes/crypto.class.php';
 
 
 // Potential HTTP status codes
@@ -43,12 +44,12 @@ $personal_id_signature = $serviceRequest['personal_id_signature'] ?? '';
 
 // Decrypts encrypted personal_id parameter
 if (!empty($personal_id)) {
-    $personal_id = decrypt_text($personal_id, $private_key);
+    $personal_id = Crypto::decryptText($personal_id, $private_key);
 }
 
 
 // Checks whether the user exists
-if (!verifySignature(
+if (!Crypto::verifySignature(
     $client_public_key, 
     OPENSSL_ALGO_SHA256, 
     $personal_id_signature, 
@@ -83,8 +84,8 @@ $result = [
 if($status_code == 200) {
     $response = json_encode($users[$personal_id]);
     $result['data'] = [
-        'person_details' => encrypt_text($response, $client_public_key),
-        'person_details_signature' => getSignature($private_key, OPENSSL_ALGO_SHA256, $response)
+        'person_details' => Crypto::encryptText($response, $client_public_key),
+        'person_details_signature' => Crypto::getSignature($private_key, OPENSSL_ALGO_SHA256, $response)
     ];
 }
 
@@ -99,50 +100,3 @@ http_response_code($status_code);
 
 // Returns response of the request
 echo json_encode($result);
-
-
-
-
-
-// Encrypts the text using the secret key
-function encrypt_text($text, $client_public_key)
-{
-    openssl_public_encrypt($text, $encrypted_message, $client_public_key);
-
-    return base64_encode($encrypted_message);
-}
-
-// Decrypts encrypted text (first parameter) using the secret key (second parameter)
-function decrypt_text($encrypted_base64, $private_key)
-{
-    $encrypted_string = base64_decode($encrypted_base64);
-    openssl_private_decrypt($encrypted_string, $original_text, $private_key);
-
-    return $original_text;
-}
-
-// Returns digital signature of the string
-function getSignature($private_key, $algorithm, $string_to_sign) {
-
-    $binary_signature = "";
-
-    // Create signature on $data
-    openssl_sign($string_to_sign, $binary_signature, $private_key, $algorithm);
-
-    // Create base64 version of the signature
-    $signature = base64_encode($binary_signature);
-    
-    return $signature;
-}
-
-// verifies the signature using the client's public key
-function verifySignature($server_public_key, $algorithm, $signature, $string) {
-
-    // Extract original binary signature 
-    $binary_signature = base64_decode($signature);
-
-    // Check signature
-    $result = openssl_verify($string, $binary_signature, $server_public_key, $algorithm);
-
-    return $result;
-}
