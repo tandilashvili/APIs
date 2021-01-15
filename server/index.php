@@ -58,13 +58,12 @@ $result = [
 ];
 
 
-$found_user_details = json_encode($users[$personal_id]);
-
-
-
-
 // Sends user details, if there is no error
 if($status_code == 200) {
+
+    // Encodes returning data to json format
+    $found_user_details = json_encode($users[$personal_id]);
+    
     // Makes encryption in both symmetric and asymmetric ways
     // Calculates symmetric encryption latency
     $time = microtime(1);
@@ -93,7 +92,6 @@ http_response_code($status_code);
 
 // Returns response of the request
 echo json_encode($result);
-
 
 
 
