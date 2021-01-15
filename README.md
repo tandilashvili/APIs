@@ -11,4 +11,9 @@ http://localhost/APIs/client/
 
 
 API Description:
-Person details in response json is ncrypted with private key (asymmetric encryption) 
+Comparison between symmetric and asymmetric encryption
+
+1. symmetric encrypted text is shorter
+2. symmetric encryption is many times faster
+3. symmetric encrypted text is always the same
+4. symmetric encryption can be used for long texts
