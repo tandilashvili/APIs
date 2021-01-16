@@ -1,7 +1,22 @@
 <?php
 
 class Crypto {
-    // Encrypts the text using the secret key
+    
+    // Encrypts the text using symmetric secret key
+    static function encryptTextSymmetric($text, $secret_key)
+    {
+        return openssl_encrypt($text,"AES-128-ECB", $secret_key);
+    }
+
+    // Decrypts encrypted text using symmetric secret key
+    static function decryptTextSymmetric($encrypted_string, $secret_key)
+    {
+        return openssl_decrypt($encrypted_string,"AES-128-ECB", $secret_key);
+    }
+
+
+    
+    // Encrypts the text using public key
     static function encryptText($text, $server_public_key)
     {
         openssl_public_encrypt($text, $encrypted_message, $server_public_key);
@@ -9,7 +24,7 @@ class Crypto {
         return base64_encode($encrypted_message);
     }
 
-    // Decrypts encrypted text (first parameter) using the secret key (second parameter)
+    // Decrypts encrypted text (first parameter) using private key (second parameter)
     static function decryptText($encrypted_base64, $private_key)
     {
         $encrypted_string = base64_decode($encrypted_base64);

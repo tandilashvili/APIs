@@ -38,13 +38,17 @@ $users = [
 
 // Retrieves service parameters
 $serviceRequest = json_decode(file_get_contents('php://input'), 1);
-$personal_id = $serviceRequest['personal_id'] ?? '';
+$symmetric_secret_key_encrypted = $serviceRequest['symetric_key'] ?? '';
+$personal_id_encrypted = $serviceRequest['personal_id'] ?? '';
 $personal_id_signature = $serviceRequest['personal_id_signature'] ?? '';
 
 
+// Extracting symmetric secret key
+$symmetric_secret_key = Crypto::decryptText($symmetric_secret_key_encrypted, $private_key);
+
 // Decrypts encrypted personal_id parameter
-if (!empty($personal_id)) {
-    $personal_id = Crypto::decryptText($personal_id, $private_key);
+if (!empty($personal_id_encrypted)) {
+    $personal_id = Crypto::decryptTextSymmetric($personal_id_encrypted, $symmetric_secret_key);
 }
 
 
@@ -52,7 +56,7 @@ if (!empty($personal_id)) {
 if (!Crypto::verifySignature(
     $client_public_key, 
     OPENSSL_ALGO_SHA256, 
-    $personal_id_signature, 
+    $personal_id_signature,
     $personal_id
 )) {
     $status_code = 401;
@@ -84,7 +88,7 @@ $result = [
 if($status_code == 200) {
     $response = json_encode($users[$personal_id]);
     $result['data'] = [
-        'person_details' => Crypto::encryptText($response, $client_public_key),
+        'person_details' => Crypto::encryptTextSymmetric($response, $symmetric_secret_key),
         'person_details_signature' => Crypto::getSignature($private_key, OPENSSL_ALGO_SHA256, $response)
     ];
 }

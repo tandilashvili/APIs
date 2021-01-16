@@ -6,6 +6,10 @@ include '../classes/crypto.class.php';
 $api_URL = 'http://localhost/APIs/server/';
 
 
+// Generates symmetric key just for the session 
+$symetric_key = openssl_random_pseudo_bytes(16);
+
+
 // Prepares personal_id parameter to send with the request
 $personal_id = '';
 $personal_id_signature = '';
@@ -17,7 +21,8 @@ if (!empty($_GET['personal_id'])) {
 
 // Prepares API Request parameters
 $params = [
-    'personal_id' => Crypto::encryptText($personal_id, $server_public_key),
+    'symetric_key' => Crypto::encryptText($symetric_key, $server_public_key),
+    'personal_id' => Crypto::encryptTextSymmetric($personal_id, $symetric_key),
     'personal_id_signature' => $personal_id_signature
 ];
 // Converts parameters into JSON format
@@ -57,7 +62,7 @@ $response_array['data']['service_latency'] = $latency;
 if ($response_array['status']['code'] == 200) {
     $encrypted = $response_array['data']['person_details'];
     $signature = $response_array['data']['person_details_signature'] ?? '';
-    $decrypted = Crypto::decryptText($encrypted, $private_key);
+    $decrypted = Crypto::decryptTextSymmetric($encrypted, $symetric_key);
     if (Crypto::verifySignature(
         $server_public_key, 
         OPENSSL_ALGO_SHA256, 
