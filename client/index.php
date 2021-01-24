@@ -52,7 +52,7 @@ if ($response_array['status']['code'] == 200) {
 
 
 // Encodes the response
-$res = json_encode($response_array);
+$res = json_encode($response_array, JSON_PRETTY_PRINT);
 
 
 // Sets content type to MIME type of JSON
