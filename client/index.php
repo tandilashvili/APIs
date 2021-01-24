@@ -50,7 +50,7 @@ if (!verifySignature(
     http_response_code($response_array['status']['code']);
 }
 
-$res = json_encode($response_array);
+$res = json_encode($response_array, JSON_PRETTY_PRINT);
 
 // Sets content type to MIME type of JSON
 header('Content-Type: application/json');
@@ -62,10 +62,10 @@ echo ($res);
 
 
 
-function verifySignature($server_public_key, $algorithm, $signature, $string) {
+function verifySignature($server_certificate, $algorithm, $signature, $string) {
 
     // Extracting public key from the specified certificate
-    $public_key = openssl_pkey_get_public($server_public_key);
+    $public_key = openssl_pkey_get_public($server_certificate);
     /*
     // Another way to get the certificate's content
     $public_key = openssl_pkey_get_public(file_get_contents('./cert/bank_crystal.cer'));
