@@ -50,7 +50,7 @@ if (!verifySignature(
     http_response_code($response_array['status']['code']);
 }
 
-$res = json_encode($response_array);
+$res = json_encode($response_array, JSON_PRETTY_PRINT);
 
 // Sets content type to MIME type of JSON
 header('Content-Type: application/json');
