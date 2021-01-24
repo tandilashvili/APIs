@@ -31,8 +31,6 @@ $users = [
     ],
 ];
 
-// Define API password
-const PASSWORD = 'f0f962a5517d_';
 
 // Retrieves service parameters
 $serviceRequest = json_decode(file_get_contents('php://input'), 1);

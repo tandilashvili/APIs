@@ -2,9 +2,7 @@
 include 'config.php';
 $api_URL = 'http://localhost/APIs/server/';
 
-// Define API password
-const PASSWORD = 'f0f962a5517d_';
-$request_time = date('Y-m-d|H:i:s');
+// Define request parameters
 $params = [
     'personal_id' => $_GET['personal_id']
 ];
@@ -35,7 +33,7 @@ $response_array['data']['service_latency'] = $latency;
 
 // Decrypt users content
 $response_array['data']['person_details'] = json_decode(decrypt_text($response_array['data']['person_details'], $private_key), 1);
-$res = json_encode($response_array);
+$res = json_encode($response_array, JSON_PRETTY_PRINT);
 
 // Sets content type to MIME type of JSON
 header('Content-Type: application/json');
